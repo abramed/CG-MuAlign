@@ -24,7 +24,7 @@ class FeatureGenerator(object):
 
 # the interface to generate a numpy feature matrix for every node in the graph
 def warp_feature(model, source, mapping):
-	feature_matrix = np.zeros((len(source), 100))
+	feature_matrix = np.zeros((len(source), 300))
 
 	row = 0
 	none_cnt = 0
@@ -32,7 +32,7 @@ def warp_feature(model, source, mapping):
 		# now we use the first attribute
 		for idx,attr in enumerate(source[k][1]):
 			#embed()
-			#feature_matrix[mapping[k], idx*100:(idx+1)*100] = model.generateEmbFeature(attr, sent=True)
+			#feature_matrix[mapping[k], idx*300:(idx+1)*300] = model.generateEmbFeature(attr, sent=True)
 			feature_matrix[mapping[k], :] += model.generateEmbFeature(attr, sent=True)
 
 	return feature_matrix
@@ -40,7 +40,7 @@ def warp_feature(model, source, mapping):
 
 def generateTrainWithType(in_path, graph_a, graph_b, positive_only=False):
 	train_data, val_data, test_data = [], [], [] 
-	with open(in_path+'train.csv') as IN:
+	with open(in_path+'train.csv',encoding="utf-8") as IN:
 		IN.readline()
 		left_set, right_set = set(), set()
 		for line in IN:
@@ -109,7 +109,7 @@ class Graph(object):
 	def buildGraph(self, table):
 		# self.self.entity_table_table = self.entity_table_path
 		#
-		with open(table) as IN:
+		with open(table, encoding="utf-8") as IN:
 			spamreader = csv.reader(IN, delimiter=',')
 			# embed()
 			# fields = IN.readline().strip().split(',')
