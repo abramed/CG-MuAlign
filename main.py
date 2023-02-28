@@ -150,7 +150,7 @@ def mergeGraph(graph_a, graph_b, train_data):
         g.add_edge(train_data[i, 1] + len(graph_a.id2idx), train_data[i, 0])
     
     num_edges = g.number_of_edges()
-    g.ndata['features'] = torch.cat([torch.FloatTensor(graph_a.features), torch.FloatTensor(graph_b.features)], 0).cuda()
+    g.ndata['features'] = torch.cat([torch.FloatTensor(graph_a.features), torch.FloatTensor(graph_b.features)], 0)
 
     return g
 
@@ -162,11 +162,7 @@ def main(args):
     # embed()
     train_data, val_data, test_data = generateTrainWithType('data/itunes_amazon_exp_data/exp_data/', graph_a, graph_b, positive_only=args.model_opt==0)
 
-    if args.gpu < 0:
-        cuda = False
-    else:
-        cuda = True
-        torch.cuda.set_device(args.gpu)
+    cuda=False
     #print('here')
     g, num_rel, offset, adj_a, adj_b, type_a_dict, type_b_dict = genSubGraph(graph_a, graph_b, args.n_layers+1)
     
@@ -239,7 +235,7 @@ def main(args):
             else:
                 # embed()
                 # emb = g.ndata['features']
-                loss = loss_fcn( model_gan.fc(emb[batch[:, 0]]*emb[batch[:, 1]+ offset]).squeeze(), batch[:, 2].cuda().float() )
+                loss = loss_fcn( model_gan.fc(emb[batch[:, 0]]*emb[batch[:, 1]+ offset]).squeeze(), batch[:, 2].float() )
             training_loss += loss.detach().item()
             optimizer.zero_grad()
             loss.backward()
@@ -247,7 +243,7 @@ def main(args):
 
         g.remove_edges(eids)
         del emb
-        torch.cuda.empty_cache()
+       
         
         print('Epoch:{}, loss:{}'.format(epoch, training_loss ))
 
